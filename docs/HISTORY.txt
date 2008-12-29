@@ -18,4 +18,4 @@ Changelog
 0.1.0
 -----
 
-The 0.1.0 if for me the original EzMeNu version 1.0 (see the README file)
+The 0.1.0 if for me the original EzMeNu version 1.0 (see the README.txt file)
