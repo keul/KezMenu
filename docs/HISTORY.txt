@@ -1,0 +1,21 @@
+Changelog
+=========
+
+0.2.1
+-----
+
+ * Released as egg.
+
+ * Added some txt file.
+
+0.2.0 - Unreleased
+------------------
+
+ * Fixed many issues related to font handle.
+
+ * Added the support to mouse usage.
+
+0.1.0
+-----
+
+The 0.1.0 if for me the original EzMeNu version 1.0 (see the README file)
