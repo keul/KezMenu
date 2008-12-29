@@ -3,7 +3,7 @@
 # KezMenu - By Luca Fabbri
 # This code is released under GPL license
 # ---------------------------------------------------------------
-# This work is based on the original EzMenu script, released from
+# This work is based on the original EzMeNu script, released from
 # PyMike, from the Pygame community
 # See http://www.pygame.org/project/855/
 # ---------------------------------------------------------------
