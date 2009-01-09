@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.3.0
+-----
+
+ * Added a README.txt in doctest format.
+ 
+ * Now you can enable an "enalge-on-hover" property for the menu.
+
 0.2.1
 -----
 

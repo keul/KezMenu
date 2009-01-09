@@ -7,8 +7,8 @@ setup(name='KezMenu',
       py_modules=['kezmenu',],
       version=kezmenu.__version__,
       description=kezmenu.__description__,
-      long_description=open(os.path.join("docs", "README.txt")).read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+      long_description=open(os.path.join("kezmenu", "docs", "README.txt")).read() + "\n" +
+                       open(os.path.join("kezmenu", "docs", "HISTORY.txt")).read(),
       classifiers=["Development Status :: 4 - Beta",
                    "Intended Audience :: Developers",
                    "License :: OSI Approved :: GNU General Public License (GPL)",
@@ -27,6 +27,7 @@ setup(name='KezMenu',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,
+      namespace_packages=['kezmenu'],
       install_requires=[
           # -*- Extra requirements: -*-
       ],

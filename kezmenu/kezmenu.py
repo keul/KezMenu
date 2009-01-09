@@ -11,7 +11,7 @@
 import pygame
 
 __author__ = "Keul - lucafbb AT gmail.com"
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 __description__ = "A simple and basical PyGame based module for a fast development of menu interfaces"
 
