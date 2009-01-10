@@ -9,14 +9,23 @@
 # ---------------------------------------------------------------
 
 import pygame
+import warnings
 
 __author__ = "Keul - lucafbb AT gmail.com"
 __version__ = "0.3.0"
 
-__description__ = "A simple and basical PyGame based module for a fast development of menu interfaces"
+__description__ = "A simple and basical Pygame based module for a fast development of menu interfaces"
+
+VALID_EFFECTS = ('enlarge-font-on-focus',)
+
+def deprecated(func, msg, *args, **kw):
+    """A decorator for deprecated functions"""
+    warnings.warn(msg % func.__name__, DeprecationWarning, stacklevel=3)
+    return func(*args, **kw)
+
 
 class KezMenu(object):
-    """A simple but complete class to handle menu using pygame"""
+    """A simple but complete class to handle menu using Pygame"""
 
     def __init__(self, *options):
         """Initialise the EzMenu! options should be a sequence of lists in the
@@ -30,11 +39,29 @@ class KezMenu(object):
         self.color = (0, 0, 0, 0)
         self.hcolor = (255, 0, 0, 0)
         self.mouse_focus = False
+        self._effects = {}
         try:
             self.font = pygame.font.Font(None, 32)
             self.height = len(self.options)*self.font.get_height()
             self._fixWidth()
         except:
+            pass
+
+    def enableEffect(self, name, value):
+        """Enable an effect in the KezMEnu
+        Raise a KeyError if the name of the effect is not know
+        @name: the name of the effect as string
+        value: data needed to enable the effect
+        """
+        if name not in VALID_EFFECTS:
+            raise KeyError("KezMenu don't know an effect of type %s" % name)
+        self._effects[name] = value
+
+    def disableEffect(self, name):
+        """Disable an effect"""
+        try:
+            del self._effects[name]
+        except KeyError:
             pass
 
     def _fixWidth(self):
@@ -97,11 +124,20 @@ class KezMenu(object):
         else:
             self.mouse_focus = False
 
+
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""
-        self.x = x
-        self.y = y
-        
+        self.position = (x,y)
+    @deprecated(set_pos, ("The %s function is depreacted and will be removed in future versions. "
+                          "Please use the position property instead to specify (x,y)"))
+
+    def _setPosition(self, position):
+        x,y = position
+        self._x = x
+        self._y = y
+    position = property(lambda self: (self._x,self._y), _setPosition, doc="""The menu position inside the container""")
+
+
     def set_font(self, font):
         """Set the font used for the menu."""
         self.font = font
