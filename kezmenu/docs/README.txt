@@ -64,10 +64,10 @@ and then go over. We wait for user input before going on.
 To do this we create a second silly function that we'll call often later.
 
    >>> click_count = 0
-   >>> def waitForUserAction():
+   >>> def waitForUserAction(msg='???'):
    ...     global click_count
    ...     click_count+=1
-   ...     pygame.display.set_caption("Example %s" % click_count)
+   ...     pygame.display.set_caption("Example %s - %s" % (click_count, msg))
    ...     while True:
    ...         for event in pygame.event.get():
    ...             if event.type == QUIT:
@@ -78,7 +78,7 @@ To do this we create a second silly function that we'll call often later.
 
 Ok, lets call it for the first time.
 
-   >>> waitForUserAction()
+   >>> waitForUserAction("An empty, dark surface")
 
 We only displayed on the screen a surface filled with a dark color.
 
@@ -93,6 +93,7 @@ Now it's time to create our KezMenu instance.
 To draw out menu we create before a second dummy function for test needs.
 
    >>> def drawMenu():
+   ...     surface.fill( (50,50,50,255) )
    ...     menu.draw(surface)
    ...	   blitSurface()
    ...     pygame.display.flip()
@@ -100,7 +101,7 @@ To draw out menu we create before a second dummy function for test needs.
 Even this is a valid way to create our menu, we only obtain an empty menu.
 
    >>> drawMenu()
-   >>> waitForUserAction()
+   >>> waitForUserAction("You see no difference")
 
 You see no changes from the example 1, isn't it?
 If we create our menu in this way we need to fill runtime it with our options.
@@ -118,7 +119,7 @@ As you can see the options attribute must be a tuple of couples. Those couples w
 by the label to use and a callable object to be executed when the menu item is selected.
 
    >>> drawMenu()
-   >>> waitForUserAction()
+   >>> waitForUserAction("Our first option!")
 
 Ways to link action to menu selection
 -------------------------------------
@@ -151,7 +152,7 @@ Now create a new menu instance.
 And now we refresh our window.
 
    >>> drawMenu()
-   >>> waitForUserAction()
+   >>> waitForUserAction("All our options")
 
 Its very important to see how the actions are linked to the menu items. We must create couples of labels and
 callable objects without calling it! Like abowe you must pass to the MezMenu a function, you must not call the function
@@ -172,12 +173,20 @@ The menu showed in the last example is a little ugly. Too near the the surface b
 and color used for non selected elements are ugly.
 You can modify those properties also for an already created menu.
 
-   >>> menu.set_position(30,50)
+   >>> menu.position = (30,50)
    >>> drawMenu()
-   >>> waitForUserAction()
+   >>> waitForUserAction("Not soo near to border now...")
 
+Now the menu is in a better position on the screen. Lets go over and modify some font properties.
 
-
+   >>> new_font = pygame.font.Font(None, 38)
+   >>> menu.set_font(new_font)
+   >>> menu.position = (30,50)
+   >>> drawMenu()
+   >>> waitForUserAction("Bigger font")
+   
+   
+   
 
 
 

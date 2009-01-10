@@ -18,11 +18,22 @@ __description__ = "A simple and basical Pygame based module for a fast developme
 
 VALID_EFFECTS = ('enlarge-font-on-focus',)
 
-def deprecated(func, msg, *args, **kw):
+class deprecated(object):
     """A decorator for deprecated functions"""
-    warnings.warn(msg % func.__name__, DeprecationWarning, stacklevel=3)
-    return func(*args, **kw)
-
+    
+    def __init__(self, msg):
+        self._msg = msg
+        self._printed = False
+    
+    def __call__(self, func):
+        """Log out the deprecation message, but only once"""
+        if not self._printed:
+            def wrapped_func(*args):
+                warnings.warn(self._msg % func.__name__, DeprecationWarning, stacklevel=3)
+                func(*args)
+            self._printed = True
+            return wrapped_func
+        return func
 
 class KezMenu(object):
     """A simple but complete class to handle menu using Pygame"""
@@ -41,11 +52,10 @@ class KezMenu(object):
         self.mouse_focus = False
         self._effects = {}
         try:
-            self.font = pygame.font.Font(None, 32)
-            self.height = len(self.options)*self.font.get_height()
-            self._fixWidth()
+            self._font = pygame.font.Font(None, 32)
+            self._fixSize()
         except:
-            pass
+            self._font = None
 
     def enableEffect(self, name, value):
         """Enable an effect in the KezMEnu
@@ -64,7 +74,9 @@ class KezMenu(object):
         except KeyError:
             pass
 
-    def _fixWidth(self):
+    def _fixSize(self):
+        """Fix the menu size. Commonly called when the font is changed"""
+        self.height = len(self.options)*self.font.get_height()
         for o in self.options:
             text = o[0]
             ren = self.font.render(text, 1, (0, 0, 0))
@@ -125,25 +137,29 @@ class KezMenu(object):
             self.mouse_focus = False
 
 
+    @deprecated(("The %s function is depreacted and will be removed in future versions. "
+                 "Please use the position property instead to specify (x,y)"))
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""
         self.position = (x,y)
-    @deprecated(set_pos, ("The %s function is depreacted and will be removed in future versions. "
-                          "Please use the position property instead to specify (x,y)"))
 
     def _setPosition(self, position):
         x,y = position
-        self._x = x
-        self._y = y
-    position = property(lambda self: (self._x,self._y), _setPosition, doc="""The menu position inside the container""")
+        self.x = x
+        self.y = y
+    position = property(lambda self: (self.x,self.y), _setPosition, doc="""The menu position inside the container""")
 
-
+    @deprecated(("The %s function is depreacted and will be removed in future versions. "
+                 "Please use the font property instead."))
     def set_font(self, font):
         """Set the font used for the menu."""
         self.font = font
-        self.height = len(self.options)*self.font.get_height()
-        self._fixWidth()
-        
+
+    def _setFont(self, font):
+        self._font = font
+        self._fixSize()
+    font = property(lambda self: self._font, _setFont, doc="""Font used by the menu""")
+
     def set_highlight_color(self, color):
         """Set the highlight color"""
         self.hcolor = color
