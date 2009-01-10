@@ -70,9 +70,6 @@ To do this we create a second silly function that we'll call often later.
    ...     pygame.display.set_caption("Example %s - %s" % (click_count, msg))
    ...     while True:
    ...         for event in pygame.event.get():
-   ...             if event.type == QUIT:
-   ...                 import sys
-   ...                 sys.exit(0)
    ...             if event.type==KEYDOWN:
    ...                 return
 
@@ -177,19 +174,74 @@ You can modify those properties also for an already created menu.
    >>> drawMenu()
    >>> waitForUserAction("Not soo near to border now...")
 
-Now the menu is in a better position on the screen. Lets go over and modify some font properties.
+Now the menu is in a better position on the screen.
+
+Lets go over and modify some font properties. First talk of the menu dimension.
+Data about the menu dimension is always available using the width and height attributes.
+
+   >>> menu.width
+   126
+   >>> menu.height
+   115
+
+Those values are related to the labels displayed in the menu voices and also influenced by the
+font used (and it's dimension).
 
    >>> new_font = pygame.font.Font(None, 38)
-   >>> menu.set_font(new_font)
+   >>> menu.font = new_font
    >>> menu.position = (30,50)
    >>> drawMenu()
    >>> waitForUserAction("Bigger font")
-   
-   
-   
+
+This bigger font has different size, so the whole menu size raise.
+
+   >>> menu.width
+   154
+   >>> menu.height
+   135
 
 
+   >>> menu.color = (255,255,255,100)
+   >>> menu.focus_color = (255,255,0)
+   >>> drawMenu()
+   >>> waitForUserAction("...and better colors")
+   
+As you can see we can easily manipulate the font color, and the font of the selected item.
 
+Do something useful with our KezMenu
+------------------------------------
+
+You surely noted that our previous examples are right now static photo without any action possible.
+To make some real examples with our menu we need to use the KezMEnu.update method, and pass it
+the `pygame.Event`__ instances that Pygame capture.
+The waitForUserAction dummy function is no more needed because a menu is commonly a way itself to
+wait for user decision.
+
+__ http://www.pygame.org/docs/ref/event.html
+
+   >>> click_count+=1
+   >>> pygame.display.set_caption("Example %s - %s" % (click_count, "Use the KezMenu freely"))
+   >>> while True:
+   ...     events = pygame.event.get()
+   ...     menu.update(events)
+   ...     drawMenu()
+   ...     pygame.display.flip()
+   ...     if option_selected:
+   ...         break
+   >>> option_selected is not None
+   True
+
+The option_selected variable now contains the return value of the callable, relative to the option choosen.
+
+NB: if you select the 'Quit' option running this test you will get a fake test failure.
+This isn't a KezMenu bug, but it's normal in Python tests: the sys.exit call raise a
+SystemExit exception that in tests are handled in a different way.
+
+Ok, the example is at the end!
+
+You can find examples about menu effects in the EFFECTS.txt file!
+
+   >>> pygame.quit()
 
 Credits
 =======
