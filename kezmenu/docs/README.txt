@@ -22,9 +22,14 @@ politically correct test because I wait for user input and no real tests are don
 Maybe someday I'll fix this!
 
 However the code in this page is a working example. If you know nothing about doctests, only know that you can
-run this code simple accessing at the egg source and type:
+run this code simply downloading the source, going to the kezmenu directory and type:
 
    python tests.py
+
+If you have the library installed on your system you can run the example program fron the python interpreter.
+
+   import kezmenu
+   kezmenu.runTests() 
 
 Init all the Pygame stuff
 -------------------------
@@ -110,10 +115,14 @@ We need to know what the menu action must execute, before defining the option.
    >>> def option1():
    ...     global option_selected
    ...     option_selected = 1
-   >>> menu.options = ( ["First option!", option1], )
+   >>> menu.options = ( {'label': 'First option!', 'callable': option1}, )
 
-As you can see the options attribute must be a tuple of couples. Those couples will be composed
-by the label to use and a callable object to be executed when the menu item is selected.
+As you can see the options member must be a tuple of dictionary.
+Those dict must contains (at least) the 'label' and 'callable' parameter; other paramter can
+be specified for advanced use (see EFFECTS.txt).
+
+The 'label' is the string to be draw for the menu option, and the 'callable' is the function, object,
+method, ... to be call on selection.
 
    >>> drawMenu()
    >>> waitForUserAction("Our first option!")
@@ -141,10 +150,20 @@ Now create a new menu instance.
    >>> menu = KezMenu(
    ...            ["First option!", option1],
    ...            ["sEcond", option2],
-   ...            ["Again!", option2],
+   ...            ["Again!", option3],
    ...            ["Lambda", lambda: optionX(71)],
    ...            ["Quit", sys.exit],
    ...        )
+
+You can fast create menu entries giving a list of couples that are our 'label' and 'callable' attributes.
+The __init__ method does the magic and save those values in the right way.
+
+   >>> type(menu.options[0]) == dict
+   True
+   >>> menu.options[1]['callable']
+   <function option2 at ...>
+   >>> [x['label'] for x in menu.options]
+   ['First option!', 'sEcond', 'Again!', 'Lambda', 'Quit']
 
 And now we refresh our window.
 
@@ -170,7 +189,11 @@ The menu showed in the last example is a little ugly. Too near the the surface b
 and color used for non selected elements are ugly.
 You can modify those properties also for an already created menu.
 
+   >>> menu.position
+   (0, 0)
    >>> menu.position = (30,50)
+   >>> menu.position
+   (30, 50)
    >>> drawMenu()
    >>> waitForUserAction("Not soo near to border now...")
 
@@ -252,6 +275,7 @@ TODO
 ====
 
  * Submenus?
+ * More effects
 
 Subversion and other
 ====================

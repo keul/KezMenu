@@ -33,4 +33,4 @@ __ http://www.python.org/dev/peps/pep-0008/
 0.1.0
 -----
 
-The 0.1.0 if for me the original EzMeNu version 1.0 (see the README.txt file)
+For version 0.1.0 I mean the original EzMeNu version 1.0.

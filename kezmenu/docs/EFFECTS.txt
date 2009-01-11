@@ -1,0 +1,87 @@
+===============================
+Play with the KezMenu's effects
+===============================
+
+Introduction
+============
+
+From version 0.3.0 the inner KezMenu structure is changed a lot. One of the first
+news is that every line has it's own `pygame.font.Font`__ to use.
+
+__ http://www.pygame.org/docs/ref/font.html#pygame.font.Font
+
+This will give us a lot of freedom for menu's entries display effects.
+
+   >>> import pygame
+   >>> from pygame.locals import *
+   >>> import pygame.font
+   >>> pygame.font.init()
+   >>> screen = pygame.display.set_mode((640,480), 0, 32)
+   >>> surface = pygame.Surface( (400,400), flags=SRCALPHA, depth=32 )
+   >>> surface.fill( (50,50,50,255) )
+   <rect(0, 0, 400, 400)>
+
+   >>> def blitSurface():
+   ...     screen.blit(surface, (50,50) )
+   ...     pygame.display.update()
+
+   >>> click_count = 0
+   >>> def waitForUserAction(msg='???'):
+   ...     global click_count
+   ...     click_count+=1
+   ...     pygame.display.set_caption("Example %s - %s" % (click_count, msg))
+   ...     while True:
+   ...         for event in pygame.event.get():
+   ...             if event.type==KEYDOWN:
+   ...                 return
+
+   >>> from kezmenu import KezMenu
+   >>> menu = KezMenu()
+   >>> def drawMenu():
+   ...     surface.fill( (50,50,50,255) )
+   ...     menu.draw(surface)
+   ...	   blitSurface()
+   ...     pygame.display.flip()
+
+   >>> menu = KezMenu(
+   ...            ["First option!", None],
+   ...            ["sEcond", None],
+   ...            ["Again!", None],
+   ...            ["Lambda", None],
+   ...            ["Quit", None],
+   ...        )
+   >>> menu.font = pygame.font.Font(None, 20)
+   >>> menu.color = (255,255,255)
+   >>> menu.height
+   70
+
+Here again a standard menu.
+
+   >>> drawMenu()
+   >>> waitForUserAction("The same boring menu")
+
+Now we want a bigger font for 'sEcond' entry.
+
+   >>> menu.options[1]['font'] = pygame.font.Font(None, 26)
+   >>> drawMenu()
+   >>> waitForUserAction("Bigger entry 2")
+
+But manually play with the options menu can lead to some errors in the menu itself, because KezMenu instance
+is not warn of changed parameters.
+
+   >>> menu.height
+   70
+
+So even if we display a new well drawn menu, the saved size is not changed. This is bad.
+We can fix this simply calling an internal KezMenu method, that commonly KezMenu objects call.
+
+   >>> menu._fixSize()
+   >>> menu.height
+   74
+
+This is the general way used from effects to add feature to KezMenu.
+
+The KezMenu available effects
+=============================
+
+
