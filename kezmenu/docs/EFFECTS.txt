@@ -35,6 +35,11 @@ This will give us a lot of freedom for menu's entries display effects.
    ...             if event.type==KEYDOWN:
    ...                 return
 
+   >>> def updateCaption(msg='???'):
+   ...     global click_count
+   ...     click_count+=1
+   ...     pygame.display.set_caption("Example %s - %s" % (click_count, msg))
+
    >>> from kezmenu import KezMenu
    >>> menu = KezMenu()
    >>> def drawMenu():
@@ -43,15 +48,24 @@ This will give us a lot of freedom for menu's entries display effects.
    ...	   blitSurface()
    ...     pygame.display.flip()
 
+   >>> option_selected = 0
+   >>> def optSelected():
+   ...     global option_selected
+   ...     option_selected=1
+
    >>> menu = KezMenu(
-   ...            ["First option!", None],
-   ...            ["sEcond", None],
-   ...            ["Again!", None],
-   ...            ["Lambda", None],
-   ...            ["Quit", None],
+   ...            ["First option!", optSelected],
+   ...            ["sEcond", optSelected],
+   ...            ["Again!", optSelected],
+   ...            ["Lambda", optSelected],
+   ...            ["Quit", optSelected],
    ...        )
    >>> menu.font = pygame.font.Font(None, 20)
    >>> menu.color = (255,255,255)
+   >>> menu.position = 10,10
+   
+Lets show a moment the actual menu height.
+   
    >>> menu.height
    70
 
@@ -83,5 +97,41 @@ This is the general way used from effects to add feature to KezMenu.
 
 The KezMenu available effects
 =============================
+
+Here a list and example of usage of all available effects.
+Effects are enabled using the 'enableEffect' method, and must be used for existing effects, or a
+KeyError is raised.
+
+   >>> menu.enableEffect('not-existing-effect-just-for-raise-error')
+   Traceback (most recent call last):
+   ...
+   KeyError: "KezMenu don't know an effect of type not-existing-effect-just-for-raise-error"
+
+In all the following example we need a timer, and so can use the `pygame.time.Clock`__.
+
+__ http://www.pygame.org/docs/ref/time.html#pygame.time.Clock
+
+   >>> clock = pygame.time.Clock()
+
+raise-line-padding-on-focus
+---------------------------
+
+This effect raise the padding abowe and below the focused element while time is passing.
+
+   >>> updateCaption("raise-line-padding-on-focus")
+   >>> option_selected = 0
+   >>> while True:
+   ...     time_passed = clock.tick() / 1000.
+   ...     events = pygame.event.get()
+   ...     menu.update(events, time_passed)
+   ...     drawMenu()
+   ...     pygame.display.flip()
+   ...     if option_selected:
+   ...         break
+
+
+
+
+
 
 

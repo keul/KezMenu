@@ -212,7 +212,6 @@ font used (and it's dimension).
 
    >>> new_font = pygame.font.Font(None, 38)
    >>> menu.font = new_font
-   >>> menu.position = (30,50)
    >>> drawMenu()
    >>> waitForUserAction("Bigger font")
 

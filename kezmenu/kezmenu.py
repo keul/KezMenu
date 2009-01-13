@@ -11,12 +11,12 @@
 import pygame
 import warnings
 
+from kezmenu_effects import KezMenuEffectAble, VALID_EFFECTS
+
 __author__ = "Keul - lucafbb AT gmail.com"
 __version__ = "0.3.0"
 
 __description__ = "A simple and basical Pygame library for fast develop of menu interfaces"
-
-VALID_EFFECTS = ('enlarge-font-on-focus','raise-line-padding-on-focus')
 
 class deprecated(object):
     """A decorator for deprecated functions"""
@@ -35,13 +35,14 @@ class deprecated(object):
             return wrapped_func
         return func
 
-class KezMenu(object):
+class KezMenu(KezMenuEffectAble):
     """A simple but complete class to handle menu using Pygame"""
 
     def __init__(self, *options):
         """Initialise the EzMenu! options should be a sequence of lists in the
-        format of [option_name, option_function]"""
-
+        format of [option_name, option_function]
+        """
+        KezMenuEffectAble.__init__(self)
         self.options = [{'label': x[0], 'callable': x[1]} for x in options]
         self.x = 0
         self.y = 0
@@ -51,34 +52,10 @@ class KezMenu(object):
         self.color = (0, 0, 0, 0)
         self.focus_color = (255, 0, 0, 255)
         self.mouse_focus = False
-        self._effects = {}
         # The 2 lines below seem stupid, but for effects I can need different font for every line.
         self._font = None
         self.font = pygame.font.Font(None, 32)
         self._fixSize()
-
-    def enableEffect(self, name, **kwargs):
-        """Enable an effect in the KezMEnu
-        Raise a KeyError if the name of the effect is not know.
-        Additional keyword argument will be passed to the propert effect's init method, and stored.
-        @name: the name of the effect as string (must be one of the kezmenu.VALID_EFFECTS values)
-        """
-        if name not in VALID_EFFECTS:
-            raise KeyError("KezMenu don't know an effect of type %s" % name)
-        self._effects[name] = kwargs
-        self.__getattribute__('_effectinit_%s' % name.replace("-","_"))(kwargs)
-
-    def disableEffect(self, name):
-        """Disable an effect"""
-        try:
-            del self._effects[name]
-        except KeyError:
-            pass
-
-    def _updateEffects(self, time_passed):
-        """Update method for the effects handle"""
-        for name,params in self._effects.items:
-            self.__getattribute__('_effectupdate_%s' % name.replace("-","_"))(time_passed)
 
     def _fixSize(self):
         """Fix the menu size. Commonly called when the font is changed"""
@@ -95,7 +72,14 @@ class KezMenu(object):
         """Draw the menu to the surface."""
         offset = 0
         i = 0
+        ml, mt = self.position
+        options_count = len(self.options)
         for o in self.options:
+            last = o == options_count-1
+            # padding above the line
+            if o!=0 and o.get('padding_line',0):
+                offset+=o['padding_line']
+            
             font = o.get('font',self._font)
             if i==self.option and self.focus_color:
                 clr = self.focus_color
@@ -105,8 +89,14 @@ class KezMenu(object):
             ren = font.render(text, 1, clr)
             if ren.get_width() > self.width:
                 self.width = ren.get_width()
+            o['label_rect'] = pygame.Rect( (ml+self.x, mt+self.y + offset), (ren.get_width(),ren.get_height()) )
             surface.blit(ren, (self.x, self.y + offset))
             offset+=font.get_height()
+
+            # padding below the line
+            if not last and o.get('padding_line',0):
+                offset+=o['padding_line']
+
             i+=1
 
     def update(self, events, time_passed=None):
@@ -144,10 +134,7 @@ class KezMenu(object):
         mouse_pos = pygame.mouse.get_pos()
         ml,mt = self.position
         for o in self.options:
-            text = o['label']
-            font = o['font']
-            w,h = font.size(text)
-            rect = pygame.Rect( (self.x+ml, self.y + mt + i*h), (w,h) )
+            rect = o['label_rect']
             if rect.collidepoint(mouse_pos):
                 self.option = i
                 self.mouse_focus = True
@@ -198,56 +185,6 @@ class KezMenu(object):
         """Center the menu at x,y"""
         self.x = x-(self.width/2)
         self.y = y-(self.height/2)
-
-
-    # ******* Effects *******
-
-    def _effectinit_enlarge_font_on_focus(self, **kwargs):
-        """Init the effect that enlarge the focused menu entry.
-        Keyword arguments can contain enlarge_time (seconds needed to raise the element size)
-        and enlarge_factor (a value that repr the size multiplier to be reached).
-        """
-        if not kwargs.has_key('enlarge_time'):
-            kwargs['enlarge_time'] = 2.
-        if not kwargs.has_key('enlarge_factor'):
-            kwargs['enlarge_factor'] = 2.
-        kwargs['time_passed'] = 0
-
-    def _effectupdate_enlarge_font_on_focus(self, time_passed):
-        """Gradually enlarge the font size of the focused line"""
-        raise NotImplementetError("Not yet available")
-
-
-    def _effectinit_raise_line_padding_on_focus(self, **kwargs):
-        """Init the effect that raise the empty space above and below the focused entry.
-        Keyword arguments can contain enlarge_time (seconds needed to raise the element size)
-        and padding (a value that repr the number of pixel to be added above and below the focused line).
-        """        
-        if not kwargs.has_key('enlarge_time'):
-            kwargs['enlarge_time'] = 2.
-        if not kwargs.has_key('padding'):
-            kwargs['padding'] = 10
-        # Now, every menu voices need additional infos
-        for o in self.options:
-            o['padding_line']=0
-            o['padding_time_passed']=0
-
-    def _effectupdate_raise_line_padding_on_focus(self, time_passed):
-        """Gradually enlarge the padding of the focused line.
-        If the focus move from a voice to another, also reduce padding of all other not focused entries.
-        """
-        data = self._effects['raise-line-padding-on-focus']
-        pps = data['padding']/data['enlarge_time'] # pixel-per-second
-        i = 0
-        for o in self.options:
-            if i==self.option:
-                # Raise me
-                if o['padding_line']<data['padding']:
-                    pass
-            elif o['padding_line']:
-                # Reduce me
-                pass
-            i+=1
 
 
 def runTests():
