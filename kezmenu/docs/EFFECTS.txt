@@ -53,7 +53,6 @@ This will give us a lot of freedom for menu's entries display effects.
    ...            ["Lambda", optSelected],
    ...            ["Quit", optSelected],
    ...        )
-   >>> menu.screen_topleft_offset = (50,50)
    >>> menu.font = pygame.font.Font(None, 20)
    >>> menu.color = (255,255,255)
    >>> menu.position = (10,10)
@@ -120,10 +119,10 @@ Padding on the last element will only raise the top padding.
 Padding on the first element will only raise the bottom padding.
 
 `padding`
-	The number of pixel that will be added above and below the selected menu entry.
+	Default: 10px. The number of pixel that will be added above and below the selected menu entry.
 
 `enlarge_time`
-	Time neesed (in seconds) to reach the max padding
+	Default: 500 millisec. Time needed (in seconds) to reach the max padding.
 
    >>> updateCaption('raise-line-padding-on-focus')
    >>> option_selected = 0
@@ -136,13 +135,34 @@ Padding on the first element will only raise the bottom padding.
    ...     if option_selected:
    ...         break
 
-The effect has a default padding of 10 pixels, and spend 500 millisec to raise the padding of focused element.
-We can change this a little.
+We can call this effect with new custom values:
 
    >>> updateCaption('raise-line-padding-on-focus (custom)')
    >>> option_selected = 0
    >>> menu.enableEffect('raise-line-padding-on-focus', padding=30, enlarge_time=1.)
-   >>> menu.enableEffect('raise-col-padding-on-focus', padding=10, enlarge_time=.5)
+   >>> while True:
+   ...     time_passed = clock.tick() / 1000.
+   ...     events = pygame.event.get()
+   ...     menu.update(events, time_passed)
+   ...     drawMenu()
+   ...     if option_selected:
+   ...         break
+   >>> menu.disableEffect('raise-line-padding-on-focus')
+
+raise-col-padding-on-focus
+--------------------------
+
+This effect raise the padding on the left of the focused element while time is passing.
+
+`padding`
+	Default: 10px. The number of pixel that will be added on the left of the selected menu entry.
+
+`enlarge_time`
+	Default: 500 millisec. Time needed (in seconds) to reach the max padding.
+
+   >>> updateCaption('raise-col-padding-on-focus')
+   >>> option_selected = 0
+   >>> menu.enableEffect('raise-col-padding-on-focus')
    >>> while True:
    ...     time_passed = clock.tick() / 1000.
    ...     events = pygame.event.get()
@@ -151,5 +171,92 @@ We can change this a little.
    ...     if option_selected:
    ...         break
 
+We can call this effect with new custom values:
 
+   >>> updateCaption('raise-col-padding-on-focus (custom)')
+   >>> option_selected = 0
+   >>> menu.enableEffect('raise-col-padding-on-focus', padding=20, enlarge_time=3.)
+   >>> while True:
+   ...     time_passed = clock.tick() / 1000.
+   ...     events = pygame.event.get()
+   ...     menu.update(events, time_passed)
+   ...     drawMenu()
+   ...     if option_selected:
+   ...         break
+   >>> menu.disableEffect('raise-col-padding-on-focus')
 
+enlarge-font-on-focus
+---------------------
+
+This effect will raise the font size of the selected element on the menu of a given multiply factor.
+The Font class of Pygame has a limitation (not a bug): is not possible to obtain the font data (family, size)
+after the font creation.
+So for use this effect is needed to pass to the init method all font data, and a new font will be created
+(the standard menu 'font' property will be overrided).
+
+`font`
+	Required. A font name of path, same as you are passing it to Pygame Font constructor, so can also be None.
+
+`size`
+	Required. The size of the font, same as you are passing it to Pygame Font constructor.
+
+`enlarge_factor`
+	Default: 2.(200%). The multiply factor of the font size at the maximum extension, as a real value.
+
+`enlarge_time`
+	Default: 500 millisec. Time needed (in seconds) to reach the max font size.
+
+   >>> updateCaption('enlarge-font-on-focus')
+   >>> option_selected = 0
+   >>> menu.enableEffect('enlarge-font-on-focus', font=None, size=18)
+   >>> while True:
+   ...     time_passed = clock.tick() / 1000.
+   ...     events = pygame.event.get()
+   ...     menu.update(events, time_passed)
+   ...     drawMenu()
+   ...     if option_selected:
+   ...         break
+
+Lets now customized all the data:
+
+   >>> updateCaption('enlarge-font-on-focus (focus)')
+   >>> option_selected = 0
+   >>> menu.enableEffect('enlarge-font-on-focus', font=None, size=18, enlarge_factor=5., enlarge_time=2.)
+   >>> while True:
+   ...     time_passed = clock.tick() / 1000.
+   ...     events = pygame.event.get()
+   ...     menu.update(events, time_passed)
+   ...     drawMenu()
+   ...     if option_selected:
+   ...         break
+	>>> menu.disableEffect('enlarge-font-on-focus')
+
+Combining KezMenu effects
+=========================
+
+The primary scope of KezMenu effects is to be enough flexible to be activated in same time.
+As the effects available will raise in future, sometimes can be that effects will fall in conflict each other, but
+in general I'll try to integrate them.
+
+Activate more that one effects in the same time is very simple: just activate it!
+
+   >>> updateCaption('Combined effects example')
+   >>> option_selected = 0
+   >>> menu.enableEffect('raise-line-padding-on-focus', padding=30, enlarge_time=1.)
+   >>> menu.enableEffect('raise-col-padding-on-focus', padding=20, enlarge_time=1.)
+   >>> menu.enableEffect('enlarge-font-on-focus', font=None, size=16, enlarge_factor=3.)
+   >>> while True:
+   ...     time_passed = clock.tick() / 1000.
+   ...     events = pygame.event.get()
+   ...     menu.update(events, time_passed)
+   ...     drawMenu()
+   ...     if option_selected:
+   ...         break
+   >>> menu.disableEffect('raise-line-padding-on-focus')
+   >>> menu.disableEffect('raise-col-padding-on-focus')
+   >>> menu.disableEffect('enlarge-font-on-focus')
+
+Wanna write a new effect?
+=========================
+
+If anyone is interested in develop a new effect, I will be happy to integrate it in KezMenu!

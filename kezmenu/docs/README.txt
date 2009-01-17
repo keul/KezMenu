@@ -303,21 +303,5 @@ Goodbye!
 
    >>> pygame.quit()
 
-Credits
-=======
 
- * PyMike from the Pygame community for his original work.
-
-TODO
-====
-
- * Submenus?
- * More effects
-
-Subversion and other
-====================
-
-The SVN repository is hosted at the `Keul's Python Libraries`__
-
-__ https://sourceforge.net/projects/kpython-utils/
 

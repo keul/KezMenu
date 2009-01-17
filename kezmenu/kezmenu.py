@@ -71,7 +71,7 @@ class KezMenu(KezMenuEffectAble):
             self.height+=font.get_height()
 
     def draw(self, surface):
-        """Draw the menu to the surface."""
+        """Blit the menu to a surface."""
         offset = 0
         i = 0
         ol, ot = self.screen_topleft_offset
@@ -107,7 +107,7 @@ class KezMenu(KezMenuEffectAble):
         """Update the menu and get input for the menu.
         @events: the pygame catched events
         @time_passed: optional parameter, only used for animations. The time passed (in seconds) from the last
-                      update call (commonly went from pygame.Clock.tick method)
+                      update call (commonly obtained from a call on pygame.Clock.tick)
         """
         for e in events:
             if e.type == pygame.KEYDOWN:
@@ -139,11 +139,12 @@ class KezMenu(KezMenuEffectAble):
         mouse_pos = pygame.mouse.get_pos()
         ml,mt = self.position
         for o in self.options:
-            rect = o['label_rect']
-            if rect.collidepoint(mouse_pos):
-                self.option = i
-                self.mouse_focus = True
-                break           
+            rect = o.get('label_rect')
+            if rect:
+                if rect.collidepoint(mouse_pos):
+                    self.option = i
+                    self.mouse_focus = True
+                    break           
             i+=1
         else:
             self.mouse_focus = False

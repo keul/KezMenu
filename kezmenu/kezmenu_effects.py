@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pygame
+
 VALID_EFFECTS = ('enlarge-font-on-focus','raise-line-padding-on-focus','raise-col-padding-on-focus')
 
 class KezMenuEffectAble(object):
@@ -22,7 +24,10 @@ class KezMenuEffectAble(object):
         """Disable an effect"""
         try:
             del self._effects[name]
+            self.__getattribute__('_effectdisable_%s' % name.replace("-","_"))()
         except KeyError:
+            pass
+        except AttributeError:
             pass
 
     def _updateEffects(self, time_passed):
@@ -38,15 +43,49 @@ class KezMenuEffectAble(object):
         and enlarge_factor (a value that repr the size multiplier to be reached).
         """
         self._effects[name] = kwargs
+        if not kwargs.has_key('font'):
+            raise TypeError("enlarge_font_on_focus: font parameter is required")
+        if not kwargs.has_key('size'):
+            raise TypeError("enlarge_font_on_focus: size parameter is required")
         if not kwargs.has_key('enlarge_time'):
-            kwargs['enlarge_time'] = 2.
+            kwargs['enlarge_time'] = .5
         if not kwargs.has_key('enlarge_factor'):
             kwargs['enlarge_factor'] = 2.
-        kwargs['time_passed'] = 0
+        kwargs['raise_font_ps'] = kwargs['enlarge_factor']/kwargs['enlarge_time'] # pixel-per-second
+        for o in self.options:
+            o['font'] = pygame.font.Font(kwargs['font'], kwargs['size'])
+            o['font_current_size'] = kwargs['size']
+            o['raise_font_factor'] = 1.
 
     def _effectupdate_enlarge_font_on_focus(self, time_passed):
         """Gradually enlarge the font size of the focused line"""
-        raise NotImplementedError("Not yet available")
+        data = self._effects['enlarge-font-on-focus']
+        fps = data['raise_font_ps']
+        i = 0
+        final_size = data['size'] * data['enlarge_factor']
+        for o in self.options:
+            if i==self.option:
+                # Raise me
+                if o['font_current_size']<final_size:
+                    o['raise_font_factor']+=fps*time_passed
+                elif o['font_current_size']>final_size:
+                    o['raise_font_factor']=data['enlarge_factor']
+            elif o['raise_font_factor']!=1.:
+                # decrease
+                if o['raise_font_factor']>1.:
+                    o['raise_font_factor']-=fps*time_passed
+                elif o['raise_font_factor']<1.:
+                    o['raise_font_factor'] = 1.
+
+            new_size = int(data['size'] * o['raise_font_factor'])
+            if new_size!=o['font_current_size']:
+                o['font'] = pygame.font.Font(data['font'], new_size)
+                o['font_current_size'] = new_size
+            i+=1
+
+    def _effectdisable_enlarge_font_on_focus(self):
+        """Restore the base font"""
+        self.font = self._font
 
 
     def _effectinit_raise_line_padding_on_focus(self, name, **kwargs):
@@ -63,7 +102,6 @@ class KezMenuEffectAble(object):
         # Now, every menu voices need additional infos
         for o in self.options:
             o['padding_line']=0.
-            o['padding_time_passed']=0.
 
     def _effectupdate_raise_line_padding_on_focus(self, time_passed):
         """Gradually enlarge the padding of the focused line.
@@ -86,6 +124,11 @@ class KezMenuEffectAble(object):
                     o['padding_line'] = 0
             i+=1
 
+    def _effectdisable_raise_line_padding_on_focus(self):
+        """Delete all line paddings"""
+        for o in self.options:
+            del o['padding_line']
+
 
     def _effectinit_raise_col_padding_on_focus(self, name, **kwargs):
         """Init the effect that raise the empty space on the left of the focused entry.
@@ -101,7 +144,6 @@ class KezMenuEffectAble(object):
         # Now, every menu voices need additional infos
         for o in self.options:
             o['padding_col']=0.
-            o['padding_time_passed']=0.
 
     def _effectupdate_raise_col_padding_on_focus(self, time_passed):
         """Gradually enlarge the padding of the focused column.
@@ -123,3 +165,9 @@ class KezMenuEffectAble(object):
                 elif o['padding_col']<0:
                     o['padding_col'] = 0
             i+=1
+
+    def _effectdisable_raise_col_padding_on_focus(self):
+        """Delete all column paddings"""
+        for o in self.options:
+            del o['padding_col']
+
