@@ -17,13 +17,8 @@ This will give us a lot of freedom for menu's entries display effects.
    >>> import pygame.font
    >>> pygame.font.init()
    >>> screen = pygame.display.set_mode((640,480), 0, 32)
-   >>> surface = pygame.Surface( (400,400), flags=SRCALPHA, depth=32 )
-   >>> surface.fill( (50,50,50,255) )
-   <rect(0, 0, 400, 400)>
-
-   >>> def blitSurface():
-   ...     screen.blit(surface, (50,50) )
-   ...     pygame.display.update()
+   >>> screen.fill( (50,50,50,255) )
+   <rect(0, 0, 640, 480)>
 
    >>> click_count = 0
    >>> def waitForUserAction(msg='???'):
@@ -41,11 +36,9 @@ This will give us a lot of freedom for menu's entries display effects.
    ...     pygame.display.set_caption("Example %s - %s" % (click_count, msg))
 
    >>> from kezmenu import KezMenu
-   >>> menu = KezMenu()
    >>> def drawMenu():
-   ...     surface.fill( (50,50,50,255) )
-   ...     menu.draw(surface)
-   ...	   blitSurface()
+   ...     screen.fill( (50,50,50,255) )
+   ...     menu.draw(screen)
    ...     pygame.display.flip()
 
    >>> option_selected = 0
@@ -60,11 +53,12 @@ This will give us a lot of freedom for menu's entries display effects.
    ...            ["Lambda", optSelected],
    ...            ["Quit", optSelected],
    ...        )
+   >>> menu.screen_topleft_offset = (50,50)
    >>> menu.font = pygame.font.Font(None, 20)
    >>> menu.color = (255,255,255)
-   >>> menu.position = 10,10
-   
-Lets show a moment the actual menu height.
+   >>> menu.position = (10,10)
+
+Lets show a moment the actual menu height:
    
    >>> menu.height
    70
@@ -74,64 +68,88 @@ Here again a standard menu.
    >>> drawMenu()
    >>> waitForUserAction("The same boring menu")
 
-Now we want a bigger font for 'sEcond' entry.
+Now we want a bigger font for 'sEcond' entry:
 
    >>> menu.options[1]['font'] = pygame.font.Font(None, 26)
    >>> drawMenu()
    >>> waitForUserAction("Bigger entry 2")
 
-But manually play with the options menu can lead to some errors in the menu itself, because KezMenu instance
-is not warn of changed parameters.
+Lets who now that manually play with the options menu can lead to some errors in the menu itself,
+because KezMenu instance is not warn of changed parameters:
 
    >>> menu.height
    70
 
 So even if we display a new well drawn menu, the saved size is not changed. This is bad.
-We can fix this simply calling an internal KezMenu method, that commonly KezMenu objects call.
+We can fix this simply calling an internal KezMenu method, that commonly KezMenu objects call for us:
 
    >>> menu._fixSize()
    >>> menu.height
    74
 
-This is the general way used from effects to add feature to KezMenu.
+This introduction was only a taste of what there's inside KezMenu effect's ways to do things.
 
 The KezMenu available effects
 =============================
 
 Here a list and example of usage of all available effects.
 Effects are enabled using the 'enableEffect' method, and must be used for existing effects, or a
-KeyError is raised.
+KeyError is raised:
 
    >>> menu.enableEffect('not-existing-effect-just-for-raise-error')
    Traceback (most recent call last):
    ...
    KeyError: "KezMenu don't know an effect of type not-existing-effect-just-for-raise-error"
 
-In all the following example we need a timer, and so can use the `pygame.time.Clock`__.
+In all the following example we need a timer, and so can use the `pygame.time.Clock`__:
 
 __ http://www.pygame.org/docs/ref/time.html#pygame.time.Clock
 
    >>> clock = pygame.time.Clock()
 
+To enable an effect, we must use the 'enableEffect' method, passing to it the name of the effect and
+optionally some keyword arguments.
+
+Important thing: effects can be (sometimes) combined!
+
 raise-line-padding-on-focus
 ---------------------------
 
-This effect raise the padding abowe and below the focused element while time is passing.
+This effect raise the padding above and below the focused element while time is passing.
+Padding on the last element will only raise the top padding.
+Padding on the first element will only raise the bottom padding.
 
-   >>> updateCaption("raise-line-padding-on-focus")
+`padding`
+	The number of pixel that will be added above and below the selected menu entry.
+
+`enlarge_time`
+	Time neesed (in seconds) to reach the max padding
+
+   >>> updateCaption('raise-line-padding-on-focus')
    >>> option_selected = 0
+   >>> menu.enableEffect('raise-line-padding-on-focus')
    >>> while True:
    ...     time_passed = clock.tick() / 1000.
    ...     events = pygame.event.get()
    ...     menu.update(events, time_passed)
    ...     drawMenu()
-   ...     pygame.display.flip()
    ...     if option_selected:
    ...         break
 
+The effect has a default padding of 10 pixels, and spend 500 millisec to raise the padding of focused element.
+We can change this a little.
 
-
-
+   >>> updateCaption('raise-line-padding-on-focus (custom)')
+   >>> option_selected = 0
+   >>> menu.enableEffect('raise-line-padding-on-focus', padding=30, enlarge_time=1.)
+   >>> menu.enableEffect('raise-col-padding-on-focus', padding=10, enlarge_time=.5)
+   >>> while True:
+   ...     time_passed = clock.tick() / 1000.
+   ...     events = pygame.event.get()
+   ...     menu.update(events, time_passed)
+   ...     drawMenu()
+   ...     if option_selected:
+   ...         break
 
 
 

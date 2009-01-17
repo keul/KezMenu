@@ -46,11 +46,13 @@ class KezMenu(KezMenuEffectAble):
         self.options = [{'label': x[0], 'callable': x[1]} for x in options]
         self.x = 0
         self.y = 0
+        self.screen_topleft_offset = (0,0)
         self.option = 0
         self.width = 0
         self.height = 0
         self.color = (0, 0, 0, 0)
         self.focus_color = (255, 0, 0, 255)
+        self.mouse_enabled = True
         self.mouse_focus = False
         # The 2 lines below seem stupid, but for effects I can need different font for every line.
         self._font = None
@@ -72,12 +74,14 @@ class KezMenu(KezMenuEffectAble):
         """Draw the menu to the surface."""
         offset = 0
         i = 0
-        ml, mt = self.position
-        options_count = len(self.options)
+        ol, ot = self.screen_topleft_offset
+        first = self.options and self.options[0]
+        last = self.options and self.options[-1]
         for o in self.options:
-            last = o == options_count-1
+            indent = o.get('padding_col',0)
+            
             # padding above the line
-            if o!=0 and o.get('padding_line',0):
+            if o!=first and o.get('padding_line',0):
                 offset+=o['padding_line']
             
             font = o.get('font',self._font)
@@ -89,12 +93,12 @@ class KezMenu(KezMenuEffectAble):
             ren = font.render(text, 1, clr)
             if ren.get_width() > self.width:
                 self.width = ren.get_width()
-            o['label_rect'] = pygame.Rect( (ml+self.x, mt+self.y + offset), (ren.get_width(),ren.get_height()) )
-            surface.blit(ren, (self.x, self.y + offset))
+            o['label_rect'] = pygame.Rect( (ol+self.x + indent, ot+self.y + offset), (ren.get_width(),ren.get_height()) )
+            surface.blit(ren, (self.x + indent, self.y + offset))
             offset+=font.get_height()
 
             # padding below the line
-            if not last and o.get('padding_line',0):
+            if o!=last and o.get('padding_line',0):
                 offset+=o['padding_line']
 
             i+=1
@@ -124,8 +128,9 @@ class KezMenu(KezMenuEffectAble):
         elif self.option < 0:
             self.option = 0
         # Check for mouse position
-        self._checkMousePositionForFocus()
-        if time_passed is not None:
+        if self.mouse_enabled:
+            self._checkMousePositionForFocus()
+        if time_passed:
             self._updateEffects(time_passed)
 
     def _checkMousePositionForFocus(self):
