@@ -7,8 +7,8 @@ TODO
 ====
 
  * Submenus?
- * More effects
- * Fixes neede for work better with transparency
+ * More effects (ideas are welcome)
+ * Need to work better with transparency
 
 Subversion and other
 ====================
