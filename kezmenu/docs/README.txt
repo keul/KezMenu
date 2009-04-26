@@ -1,5 +1,5 @@
 =======
-KezMEnu
+KezMenu
 =======
 
 A simple and basical Pygame based module for a fast development of menu interfaces.

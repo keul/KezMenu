@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.3.1
+-----
+
+ * Nothing new, but fixed a problem that break menus if the module is used in a py2exe environment
+
 0.3.0
 -----
 

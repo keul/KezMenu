@@ -14,7 +14,7 @@ import warnings
 from kezmenu_effects import KezMenuEffectAble, VALID_EFFECTS
 
 __author__ = "Keul - lucafbb AT gmail.com"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 __description__ = "A simple and basical Pygame library for fast develop of menu interfaces"
 
@@ -55,9 +55,12 @@ class KezMenu(KezMenuEffectAble):
         self.mouse_enabled = True
         self.mouse_focus = False
         # The 2 lines below seem stupid, but for effects I can need different font for every line.
-        self._font = None
-        self.font = pygame.font.Font(None, 32)
-        self._fixSize()
+        try:
+            self._font = None
+            self.font = pygame.font.Font(None, 32)
+            self._fixSize()
+        except: # needed for fixing the common issues if the module is used in a py2exe app
+            pass
 
     def _fixSize(self):
         """Fix the menu size. Commonly called when the font is changed"""
