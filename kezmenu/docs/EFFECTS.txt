@@ -57,7 +57,7 @@ This will give us a lot of freedom for menu's entries display effects.
    >>> menu.color = (255,255,255)
    >>> menu.position = (10,10)
 
-Lets show a moment the actual menu height:
+Lets show the actual menu height:
    
    >>> menu.height
    70
@@ -73,14 +73,15 @@ Now we want a bigger font for 'sEcond' entry:
    >>> drawMenu()
    >>> waitForUserAction("Bigger entry 2")
 
-Lets who now that manually play with the options menu can lead to some errors in the menu itself,
-because KezMenu instance is not warn of changed parameters:
+Lets who now that manually play with the options menu can lead to some errors
+in the menu itself, because KezMenu instance is not warn of changed parameters:
 
    >>> menu.height
    70
 
-So even if we display a new well drawn menu, the saved size is not changed. This is bad.
-We can fix this simply calling an internal KezMenu method, that commonly KezMenu objects call for us:
+So even if we display a new well drawn menu, the saved size is not changed.
+This is bad. We can fix this simply calling an internal KezMenu method, that
+commonly KezMenu objects call for us:
 
    >>> menu._fixSize()
    >>> menu.height
@@ -92,37 +93,41 @@ The KezMenu available effects
 =============================
 
 Here a list and example of usage of all available effects.
-Effects are enabled using the 'enableEffect' method, and must be used for existing effects, or a
-KeyError is raised:
+Effects are enabled using the *enableEffect* method, and must be used for
+existing effects, or a KeyError is raised:
 
    >>> menu.enableEffect('not-existing-effect-just-for-raise-error')
    Traceback (most recent call last):
    ...
    KeyError: "KezMenu don't know an effect of type not-existing-effect-just-for-raise-error"
 
-In all the following example we need a timer, and so can use the `pygame.time.Clock`__:
+In all the following example we need a timer, and so can use the
+`pygame.time.Clock`__:
 
 __ http://www.pygame.org/docs/ref/time.html#pygame.time.Clock
 
    >>> clock = pygame.time.Clock()
 
-To enable an effect, we must use the 'enableEffect' method, passing to it the name of the effect and
-optionally some keyword arguments.
+To enable an effect, we must use the *enableEffect* method, passing to it the
+name of the effect and optionally some keyword arguments.
 
-Important thing: effects can be (sometimes) combined!
+**Important thing**: effects can be (sometimes) combined!
 
 raise-line-padding-on-focus
 ---------------------------
 
-This effect raise the padding above and below the focused element while time is passing.
-Padding on the last element will only raise the top padding.
+This effect raise the padding above and below the focused element while time
+is passing. Padding on the last element will only raise the top padding.
 Padding on the first element will only raise the bottom padding.
 
 `padding`
-	Default: 10px. The number of pixel that will be added above and below the selected menu entry.
+    Default: 10px. The number of pixel that will be added above and below the
+    selected menu entry.
 
 `enlarge_time`
-	Default: 500 millisec. Time needed (in seconds) to reach the max padding.
+    Default: 500 millisec. Time needed (in seconds) to reach the max padding.
+
+::
 
    >>> updateCaption('raise-line-padding-on-focus')
    >>> option_selected = 0
@@ -152,13 +157,17 @@ We can call this effect with new custom values:
 raise-col-padding-on-focus
 --------------------------
 
-This effect raise the padding on the left of the focused element while time is passing.
+This effect raise the padding on the left of the focused element while time is
+passing.
 
 `padding`
-	Default: 10px. The number of pixel that will be added on the left of the selected menu entry.
+    Default: 10px. The number of pixel that will be added on the left of the
+    selected menu entry.
 
 `enlarge_time`
-	Default: 500 millisec. Time needed (in seconds) to reach the max padding.
+    Default: 500 millisec. Time needed (in seconds) to reach the max padding.
+
+::
 
    >>> updateCaption('raise-col-padding-on-focus')
    >>> option_selected = 0
@@ -188,23 +197,31 @@ We can call this effect with new custom values:
 enlarge-font-on-focus
 ---------------------
 
-This effect will raise the font size of the selected element on the menu of a given multiply factor.
-The Font class of Pygame has a limitation (not a bug): is not possible to obtain the font data (family, size)
-after the font creation.
-So for use this effect is needed to pass to the init method all font data, and a new font will be created
-(the standard menu 'font' property will be overrided).
+This effect will raise the font size of the selected element on the menu of a
+given multiply factor. The Font class of Pygame has a limitation (not a bug):
+is not possible to obtain the font data (family, size) after the font creation.
+
+So for use this effect is needed to pass to the init method all font data, and
+a new font will be created (the standard menu 'font' property will be
+overrided).
 
 `font`
-	Required. A font name of path, same as you are passing it to Pygame Font constructor, so can also be None.
+    Required. A font name of path, same as you are passing it to Pygame
+    Font constructor, so can also be None.
 
 `size`
-	Required. The size of the font, same as you are passing it to Pygame Font constructor.
+    Required. The size of the font, same as you are passing it to Pygame Font
+    constructor.
 
 `enlarge_factor`
-	Default: 2.(200%). The multiply factor of the font size at the maximum extension, as a real value.
+    Default: 2.(200%). The multiply factor of the font size at the maximum
+    extension, as a real value.
 
 `enlarge_time`
-	Default: 500 millisec. Time needed (in seconds) to reach the max font size.
+    Default: 500 millisec. Time needed (in seconds) to reach the max font
+    size.
+
+::
 
    >>> updateCaption('enlarge-font-on-focus')
    >>> option_selected = 0
@@ -234,9 +251,10 @@ Lets now customized all the data:
 Combining KezMenu effects
 =========================
 
-The primary scope of KezMenu effects is to be enough flexible to be activated in same time.
-As the effects available will raise in future, sometimes can be that effects will fall in conflict each other, but
-in general I'll try to integrate them.
+The primary scope of KezMenu effects is to be enough flexible to be activated
+in same time.
+As the effects available will raise in future, sometimes can be that effects
+will fall in conflict each other, but in general I'll try to integrate them.
 
 Activate more that one effects in the same time is very simple: just activate it!
 
@@ -259,4 +277,5 @@ Activate more that one effects in the same time is very simple: just activate it
 Wanna write a new effect?
 =========================
 
-If anyone is interested in develop a new effect, I will be happy to integrate it in KezMenu!
+If anyone is interested in develop a new effect, I will be happy to integrate
+it in KezMenu!

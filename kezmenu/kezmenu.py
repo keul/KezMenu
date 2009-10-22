@@ -14,7 +14,7 @@ import warnings
 from kezmenu_effects import KezMenuEffectAble, VALID_EFFECTS
 
 __author__ = "Keul - lucafbb AT gmail.com"
-__version__ = "0.3.1"
+__version__ = "0.3.5"
 
 __description__ = "A simple and basical Pygame library for fast develop of menu interfaces"
 
@@ -152,24 +152,11 @@ class KezMenu(KezMenuEffectAble):
         else:
             self.mouse_focus = False
 
-
-    @deprecated(("The %s function is deprecated and will be removed in future versions. "
-                 "Please use the position property instead to specify (x,y)"))
-    def set_pos(self, x, y):
-        """Set the topleft of the menu at x,y"""
-        self.position = (x,y)
-
     def _setPosition(self, position):
         x,y = position
         self.x = x
         self.y = y
     position = property(lambda self: (self.x,self.y), _setPosition, doc="""The menu position inside the container""")
-
-    @deprecated(("The %s function is deprecated and will be removed in future versions. "
-                 "Please use the font property instead."))
-    def set_font(self, font):
-        """Set the font used for the menu."""
-        self.font = font
 
     def _setFont(self, font):
         self._font = font
@@ -177,18 +164,6 @@ class KezMenu(KezMenuEffectAble):
             o['font'] = font
         self._fixSize()
     font = property(lambda self: self._font, _setFont, doc="""Font used by the menu""")
-
-    @deprecated(("The %s function is deprecated and will be removed in future versions. "
-                 "Please use the focus_color attribute directly instead."))
-    def set_highlight_color(self, color):
-        """Set the highlight color"""
-        self.focus_color = color
-
-    @deprecated(("The %s function is deprecated and will be removed in future versions. "
-                 "Please use the color attribute directly instead."))
-    def set_normal_color(self, color):
-        """Set the normal color"""
-        self.color = color
 
     def center_at(self, x, y):
         """Center the menu at x,y"""

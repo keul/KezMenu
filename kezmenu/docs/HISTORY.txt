@@ -1,39 +1,41 @@
 Changelog
 =========
 
+0.3.5
+-----
+
+* Test done with Python 2.6 and Pygame 1.9
+* Fixes to doctest
+* Removed deprecated code
+
 0.3.1
 -----
 
- * Nothing new, but fixed a problem that break menus if the module is used in a py2exe environment.
+* Nothing new, but fixed a problem that break menus if the module is used in a py2exe environment.
 
 0.3.0
 -----
 
- * Added a README.txt in doctest format.
- 
- * Added many deprecation warning for not `PEP 8`__ named methods.
-   Those methods will be removed in future.
- 
- * If the menu position was moved from (0,0), the mouse control was buggy
-   because not counting this offset.
- 
- * Support for the menu effects
+* Added a README.txt in doctest format.
+* Added many deprecation warning for not `PEP 8`__ named methods.
+  Those methods will be removed in future.
+* If the menu position was moved from (0,0), the mouse control was buggy
+  because not counting this offset.
+* Support for the menu effects
 
 __ http://www.python.org/dev/peps/pep-0008/
 
 0.2.1
 -----
 
- * Released as egg.
-
- * Added some txt file.
+* Released as egg.
+* Added some txt file.
 
 0.2.0 - Unreleased
 ------------------
 
- * Fixed many issues related to font handle.
-
- * Added the support to mouse usage.
+* Fixed many issues related to font handle.
+* Added the support to mouse usage.
 
 0.1.0
 -----
