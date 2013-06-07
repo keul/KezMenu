@@ -13,8 +13,8 @@ import warnings
 
 from kezmenu_effects import KezMenuEffectAble, VALID_EFFECTS
 
-__author__ = "Keul - lucafbb AT gmail.com"
-__version__ = "0.3.5"
+__author__ = "Luca Fabbri - luca@keul.it"
+__version__ = "0.3.6"
 
 __description__ = "A simple and basical Pygame library for fast develop of menu interfaces"
 

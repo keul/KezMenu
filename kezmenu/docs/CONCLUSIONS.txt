@@ -1,18 +1,18 @@
 Credits
 =======
 
- * PyMike from the Pygame community for his original work.
+* PyMike from the Pygame community for his original work.
 
 TODO
 ====
 
- * Submenus?
- * More effects (ideas are welcome)
- * Need to work better with transparency
+* Submenus?
+* More effects (ideas are welcome)
+* Need to work better with transparency
 
-Subversion and other
-====================
+Get the code
+============
 
-The SVN repository is hosted at the `Keul's Python Libraries`__
+The source repository is hosted at `GitHub`__
 
-__ https://sourceforge.net/projects/kpython-utils/
+__ https://github.com/keul/KezMenu
